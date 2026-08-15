@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Job & Skill Tracker</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Smart Job & Skill Tracker</h1>
+
+    <form action="/result" method="POST" enctype="multipart/form-data">
+
+        <label>Name</label>
+
+        <input type="text"
+               name="name"
+               required>
+
+
+        <label>Select Job Role</label>
+
+        <select name="role" id="role" onchange="showSkills()">
+
+            {% for role in roles %}
+            <option value="{{ role }}">{{ role }}</option>
+            {% endfor %}
+
+        </select>
+
+
+        <h3>Upload Resume</h3>
+
+        <input type="file"
+               name="resume"
+               accept=".pdf"
+               required>
+
+        <p>Upload your resume in PDF format.</p>
+
+
+        <h3>Completed Skills</h3>
+
+        <div id="skills-container">
+        </div>
+
+
+        <br>
+
+        <button type="submit">
+            Check Progress
+        </button>
+
+    </form>
+
+</div>
+
+
+<script>
+
+const jobSkills = JSON.parse('{{ job_roles | tojson | safe }}');
+
+function showSkills() {
+
+    const role = document.getElementById("role").value;
+
+    const container = document.getElementById("skills-container");
+
+    container.innerHTML = "";
+
+    const skills = jobSkills[role];
+
+    skills.forEach(function(skill) {
+
+        const label = document.createElement("label");
+
+        const checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.name = "skills";
+        checkbox.value = skill;
+
+        label.appendChild(checkbox);
+
+        label.appendChild(
+            document.createTextNode(" " + skill)
+        );
+
+        container.appendChild(label);
+
+        container.appendChild(
+            document.createElement("br")
+        );
+    });
+}
+
+showSkills();
+
+</script>
+
+</body>
+</html>
